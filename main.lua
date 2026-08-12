@@ -46,7 +46,6 @@ LogoFrame.Parent = TitleBar
 LogoFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 LogoFrame.Position = UDim2.new(0, 8, 0, 5)
 LogoFrame.Size = UDim2.new(0, 30, 0, 30)
--- Đã đổi sang đúng ID hình ảnh cô gái tóc dài của bạn gửi
 LogoFrame.Image = "rbxassetid://14022448375" 
 LogoFrame.ScaleType = Enum.ScaleType.Crop -- Cắt ảnh vừa vặn với khung tròn cho đẹp
 
@@ -114,14 +113,13 @@ ToggleUiBtn.MouseButton1Click:Connect(function()
 end)
 
 ---------------------------------------------------------
--- CÁC BIẾN TRẠNG THÁI
+-- CÁC BIẾN TRẠNG THÁI & HÀM TẠO NÚT BẤM
 ---------------------------------------------------------
 local AutoFarm = false
 local Aimbot = false
 local FullBright = false
 local StructureESP = false
 
--- Hàm tạo nút Bật/Tắt thông thường (Chữ trắng)
 local function createButton(text, callback)
     local button = Instance.new("TextButton")
     button.Parent = ButtonContainer
@@ -149,11 +147,6 @@ local function createButton(text, callback)
         callback(state)
     end)
 end
-
----------------------------------------------------------
--- CÀI ĐẶT CÁC TÍNH NĂNG CHÍNH
----------------------------------------------------------
-
 -- 1. Nút Auto Farm Bones
 createButton("Auto Farm Bones", function(on)
     AutoFarm = on
@@ -250,7 +243,6 @@ createButton("Full Brightness", function(on)
         Lighting.GlobalShadows = true
     end
 end)
-
 -- 4. Nút Định Vị Công Trình
 createButton("Structure ESP", function(on)
     StructureESP = on
@@ -263,3 +255,96 @@ createButton("Structure ESP", function(on)
                 local mainPart = obj.PrimaryPart or obj:FindFirstChildOfClass("Part")
                 if mainPart and not mainPart:FindFirstChild("ESP_Gui") then
                     local billboard = Instance.new("BillboardGui")
+                    billboard.Name = "ESP_Gui"
+                    billboard.Size = UDim2.new(0, 200, 0, 50)
+                    billboard.AlwaysOnTop = true
+                    billboard.Adornee = mainPart
+                    
+                    local textLabel = Instance.new("TextLabel", billboard)
+                    textLabel.Size = UDim2.new(1, 0, 1, 0)
+                    textLabel.BackgroundTransparency = 1
+                    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) 
+                    textLabel.TextSize = 14
+                    textLabel.Font = Enum.Font.SourceSansBold
+                    billboard.Parent = mainPart
+                    
+                    task.spawn(function()
+                        while StructureESP and obj:IsDescendantOf(workspace) do
+                            local character = LocalPlayer.Character
+                            if character and character:FindFirstChild("HumanoidRootPart") then
+                                local distance = math.floor((character.HumanoidRootPart.Position - mainPart.Position).Magnitude)
+                                textLabel.Text = obj.Name .. " [" .. distance .. "m]"
+                            end
+                            task.wait(1)
+                        end
+                        billboard:Destroy()
+                    end)
+                end
+            end
+        end
+    end
+end)
+
+---------------------------------------------------------
+-- CHỨC NĂNG DỊCH CHUYỂN THEO TÊN NGƯỜI CHƠI CHỈ ĐỊNH
+---------------------------------------------------------
+
+-- 5. Ô NHẬP TÊN (TextBox)
+local NameInput = Instance.new("TextBox")
+NameInput.Parent = ButtonContainer
+NameInput.Size = UDim2.new(0.9, 0, 0, 30)
+NameInput.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+NameInput.Font = Enum.Font.SourceSans
+NameInput.Text = ""
+NameInput.PlaceholderText = "Type player name here..." 
+NameInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+NameInput.TextColor3 = Color3.fromRGB(255, 255, 255) 
+NameInput.TextSize = 14
+
+local InputBorder = Instance.new("UIStroke")
+InputBorder.Parent = NameInput
+InputBorder.Color = Color3.fromRGB(255, 105, 180)
+InputBorder.Thickness = 1
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0, 6)
+inputCorner.Parent = NameInput
+
+-- 6. NÚT BẤM DỊCH CHUYỂN ĐẾN TÊN ĐÃ NHẬP
+local tpTargetButton = Instance.new("TextButton")
+tpTargetButton.Parent = ButtonContainer
+tpTargetButton.Size = UDim2.new(0.9, 0, 0, 35)
+tpTargetButton.BackgroundColor3 = Color3.fromRGB(150, 50, 150) 
+tpTargetButton.Font = Enum.Font.SourceSansBold
+tpTargetButton.Text = "Teleport to Target"
+tpTargetButton.TextColor3 = Color3.fromRGB(255, 255, 255) 
+tpTargetButton.TextSize = 14
+
+local tpTargetCorner = Instance.new("UICorner")
+tpTargetCorner.CornerRadius = UDim.new(0, 6)
+tpTargetCorner.Parent = tpTargetButton
+
+tpTargetButton.MouseButton1Click:Connect(function()
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local inputText = string.lower(NameInput.Text) 
+    
+    if inputText ~= "" then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                if string.find(string.lower(player.Name), inputText) or string.find(string.lower(player.DisplayName), inputText) then
+                    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        local myChar = LocalPlayer.Character
+                        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+                        local targetRoot = player.Character.HumanoidRootPart
+                        
+                        if myRoot and targetRoot then
+                            myRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 0, 3)
+                            break 
+                        end
+                    end
+                end
+            end
+        end
+    end
+end)
