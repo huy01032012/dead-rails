@@ -1,14 +1,14 @@
 -- Tạo Giao Diện (GUI) trên màn hình
 local ScreenGui = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
-local MainBorder = Instance.new("UIStroke") -- Viền hồng cho Menu chính
-local TitleBar = Instance.new("Frame") -- Thanh tiêu đề chứa logo và tên
-local LogoFrame = Instance.new("ImageLabel") -- Ô chứa Logo
-local LogoBorder = Instance.new("UIStroke") -- Viền hồng cho Logo
+local MainBorder = Instance.new("UIStroke")
+local TitleBar = Instance.new("Frame")
+local LogoFrame = Instance.new("ImageLabel")
+local LogoBorder = Instance.new("UIStroke")
 local Title = Instance.new("TextLabel")
-local ToggleUiBtn = Instance.new("TextButton") -- Nút ẩn/hiện UI
-local BtnToggleBorder = Instance.new("UIStroke") -- Viền hồng cho nút ẩn/hiện
-local ButtonContainer = Instance.new("Frame") -- Khung chứa các nút tính năng
+local ToggleUiBtn = Instance.new("TextButton")
+local BtnToggleBorder = Instance.new("UIStroke")
+local ButtonContainer = Instance.new("Frame")
 local UIListLayout = Instance.new("UIListLayout")
 
 -- Cấu hình hiển thị cho Menu chính
@@ -23,38 +23,32 @@ MainFrame.Size = UDim2.new(0, 220, 0, 385)
 MainFrame.Active = true
 MainFrame.Draggable = true 
 
--- THÊM VIỀN MÀU HỒNG CHO MENU CHÍNH
 MainBorder.Parent = MainFrame
-MainBorder.Color = Color3.fromRGB(255, 105, 180) -- Màu hồng Neon (Hot Pink)
+MainBorder.Color = Color3.fromRGB(255, 105, 180)
 MainBorder.Thickness = 2 
 MainBorder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
--- KHUNG THANH TIÊU ĐỀ MÀU HỒNG
 TitleBar.Name = "TitleBar"
 TitleBar.Parent = MainFrame
 TitleBar.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
 TitleBar.Size = UDim2.new(1, 0, 0, 40)
 
--- TỰ ĐỘNG BO TRÒN LOGO
 local logoCorner = Instance.new("UICorner")
-logoCorner.CornerRadius = UDim.new(1, 0) -- Tạo thành hình tròn hoàn hảo
+logoCorner.CornerRadius = UDim.new(1, 0)
 logoCorner.Parent = LogoFrame
 
--- LOGO ĐÃ ĐƯỢC THAY THÀNH ẢNH BẠN GỬI
 LogoFrame.Name = "Logo"
 LogoFrame.Parent = TitleBar
 LogoFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 LogoFrame.Position = UDim2.new(0, 8, 0, 5)
 LogoFrame.Size = UDim2.new(0, 30, 0, 30)
 LogoFrame.Image = "rbxassetid://14022448375" 
-LogoFrame.ScaleType = Enum.ScaleType.Crop -- Cắt ảnh vừa vặn với khung tròn cho đẹp
+LogoFrame.ScaleType = Enum.ScaleType.Crop
 
--- VIỀN MÀU HỒNG CHO LOGO TRÒN
 LogoBorder.Parent = LogoFrame
 LogoBorder.Color = Color3.fromRGB(255, 105, 180)
 LogoBorder.Thickness = 1.5
 
--- TÊN SCRIPT MÀU ĐEN 
 Title.Parent = TitleBar
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0, 45, 0, 0)
@@ -65,7 +59,6 @@ Title.TextColor3 = Color3.fromRGB(0, 0, 0)
 Title.TextSize = 16
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- NÚT ẨN / HIỆN GIAO DIỆN 
 ToggleUiBtn.Parent = TitleBar
 ToggleUiBtn.Size = UDim2.new(0, 30, 0, 30)
 ToggleUiBtn.Position = UDim2.new(1, -35, 0, 5)
@@ -76,7 +69,6 @@ ToggleUiBtn.TextColor3 = Color3.fromRGB(255, 105, 180)
 ToggleUiBtn.TextSize = 18
 ToggleUiBtn.ZIndex = 5
 
--- THÊM VIỀN MÀU HỒNG CHO NÚT ẨN/HIỆN
 BtnToggleBorder.Parent = ToggleUiBtn
 BtnToggleBorder.Color = Color3.fromRGB(255, 105, 180)
 BtnToggleBorder.Thickness = 1.5
@@ -85,19 +77,16 @@ local btnCorner = Instance.new("UICorner")
 btnCorner.CornerRadius = UDim.new(0, 6)
 btnCorner.Parent = ToggleUiBtn
 
--- Khung chứa các nút tính năng
 ButtonContainer.Parent = MainFrame
 ButtonContainer.BackgroundTransparency = 1
 ButtonContainer.Position = UDim2.new(0, 0, 0, 45)
 ButtonContainer.Size = UDim2.new(1, 0, 1, -45)
 
--- Xếp các nút thẳng hàng
 UIListLayout.Parent = ButtonContainer
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 8)
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- Xử lý ẩn hiện
 local uiHidden = false
 ToggleUiBtn.MouseButton1Click:Connect(function()
     uiHidden = not uiHidden
@@ -111,10 +100,6 @@ ToggleUiBtn.MouseButton1Click:Connect(function()
         ToggleUiBtn.Text = "_" 
     end
 end)
-
----------------------------------------------------------
--- CÁC BIẾN TRẠNG THÁI & HÀM TẠO NÚT BẤM
----------------------------------------------------------
 local AutoFarm = false
 local Aimbot = false
 local FullBright = false
@@ -147,6 +132,7 @@ local function createButton(text, callback)
         callback(state)
     end)
 end
+
 -- 1. Nút Auto Farm Bones
 createButton("Auto Farm Bones", function(on)
     AutoFarm = on
@@ -221,7 +207,6 @@ createButton("Aimbot Headshot", function(on)
         end
     end)
 end)
-
 -- 3. Nút Nhìn Trong Đêm
 createButton("Full Brightness", function(on)
     FullBright = on
@@ -243,6 +228,7 @@ createButton("Full Brightness", function(on)
         Lighting.GlobalShadows = true
     end
 end)
+
 -- 4. Nút Định Vị Công Trình
 createButton("Structure ESP", function(on)
     StructureESP = on
@@ -284,10 +270,6 @@ createButton("Structure ESP", function(on)
         end
     end
 end)
-
----------------------------------------------------------
--- CHỨC NĂNG DỊCH CHUYỂN THEO TÊN NGƯỜI CHƠI CHỈ ĐỊNH
----------------------------------------------------------
 
 -- 5. Ô NHẬP TÊN (TextBox)
 local NameInput = Instance.new("TextBox")
